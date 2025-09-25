@@ -11,8 +11,8 @@ using ToDoApi.Data;
 namespace ToDoApi.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    [Migration("20250924232054_SeedingData")]
-    partial class SeedingData
+    [Migration("20250925011454_fixNamingRule")]
+    partial class fixNamingRule
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
