@@ -53,7 +53,7 @@ namespace ToDoApi.Controllers
             todo.Text = updateTodo.Text;
             todo.Description = updateTodo.Description;
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(todo);
 
         }
         [HttpDelete("{id}")]

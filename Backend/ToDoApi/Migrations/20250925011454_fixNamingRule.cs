@@ -7,7 +7,7 @@
 namespace ToDoApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class fixNamingRule : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace ToDoApi.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Discription = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -27,7 +27,7 @@ namespace ToDoApi.Migrations
 
             migrationBuilder.InsertData(
                 table: "Todos",
-                columns: new[] { "Id", "Discription", "Text" },
+                columns: new[] { "Id", "Description", "Text" },
                 values: new object[,]
                 {
                     { "1", "none", "buy some candy." },
