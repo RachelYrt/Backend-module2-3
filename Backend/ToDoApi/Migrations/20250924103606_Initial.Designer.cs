@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoApi.Data;
 
@@ -10,9 +11,11 @@ using ToDoApi.Data;
 namespace ToDoApi.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    partial class TodoContextModelSnapshot : ModelSnapshot
+    [Migration("20250924103606_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,7 +29,7 @@ namespace ToDoApi.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Discription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Text")
@@ -41,19 +44,19 @@ namespace ToDoApi.Migrations
                         new
                         {
                             Id = "1",
-                            Description = "none",
+                            Discription = "none",
                             Text = "buy some candy."
                         },
                         new
                         {
                             Id = "5",
-                            Description = "alart",
+                            Discription = "alart",
                             Text = "new meeting tomorrow."
                         },
                         new
                         {
                             Id = "8",
-                            Description = "low primary",
+                            Discription = "low primary",
                             Text = "new tennis class this week."
                         });
                 });

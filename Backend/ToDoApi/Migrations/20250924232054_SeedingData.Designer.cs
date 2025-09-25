@@ -11,8 +11,8 @@ using ToDoApi.Data;
 namespace ToDoApi.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    [Migration("20250924095102_Initial")]
-    partial class Initial
+    [Migration("20250924232054_SeedingData")]
+    partial class SeedingData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,13 +26,10 @@ namespace ToDoApi.Migrations
 
             modelBuilder.Entity("ToDoApi.Models.Todo", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Discription")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Text")
@@ -42,6 +39,26 @@ namespace ToDoApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Todos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Description = "none",
+                            Text = "buy some candy."
+                        },
+                        new
+                        {
+                            Id = "5",
+                            Description = "alart",
+                            Text = "new meeting tomorrow."
+                        },
+                        new
+                        {
+                            Id = "8",
+                            Description = "low primary",
+                            Text = "new tennis class this week."
+                        });
                 });
 #pragma warning restore 612, 618
         }

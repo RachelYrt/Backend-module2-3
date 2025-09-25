@@ -2,6 +2,8 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ToDoApi.Migrations
 {
     /// <inheritdoc />
@@ -14,14 +16,23 @@ namespace ToDoApi.Migrations
                 name: "Todos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discription = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Todos", x => x.Id);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Todos",
+                columns: new[] { "Id", "Discription", "Text" },
+                values: new object[,]
+                {
+                    { "1", "none", "buy some candy." },
+                    { "5", "alart", "new meeting tomorrow." },
+                    { "8", "low primary", "new tennis class this week." }
                 });
         }
 
