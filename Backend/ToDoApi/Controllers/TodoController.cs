@@ -17,7 +17,9 @@ namespace ToDoApi.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            var todo = await _context.Todos.ToListAsync();
+            var todo = await _context.Todos
+                .Include(x => x.Category)
+                .ToListAsync();
             return Ok(todo);
         }
         [HttpGet("{id}")]

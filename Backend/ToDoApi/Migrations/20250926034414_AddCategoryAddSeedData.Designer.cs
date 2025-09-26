@@ -11,8 +11,8 @@ using ToDoApi.Data;
 namespace ToDoApi.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    [Migration("20250925011454_fixNamingRule")]
-    partial class fixNamingRule
+    [Migration("20250926034414_AddCategoryAddSeedData")]
+    partial class AddCategoryAddSeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,10 +24,46 @@ namespace ToDoApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ToDoApi.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Personal"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Work"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Travel"
+                        });
+                });
+
             modelBuilder.Entity("ToDoApi.Models.Todo", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -38,27 +74,46 @@ namespace ToDoApi.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Todos");
 
                     b.HasData(
                         new
                         {
                             Id = "1",
+                            CategoryId = 1,
                             Description = "none",
                             Text = "buy some candy."
                         },
                         new
                         {
                             Id = "5",
+                            CategoryId = 2,
                             Description = "alart",
                             Text = "new meeting tomorrow."
                         },
                         new
                         {
                             Id = "8",
+                            CategoryId = 1,
                             Description = "low primary",
                             Text = "new tennis class this week."
                         });
+                });
+
+            modelBuilder.Entity("ToDoApi.Models.Todo", b =>
+                {
+                    b.HasOne("ToDoApi.Models.Category", "Category")
+                        .WithMany("Todos")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ToDoApi.Models.Category", b =>
+                {
+                    b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618
         }
