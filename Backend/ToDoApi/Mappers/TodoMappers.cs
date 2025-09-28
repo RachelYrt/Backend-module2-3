@@ -36,6 +36,7 @@ namespace ToDoApi.Mappers
                 Id = Guid.NewGuid().ToString(),
                 Text = dto.Text,
                 Description = dto.Description,
+                CategoryId= dto.CategoryId,
             };
         }
         public static void UpdateFromDto(this Todo todo, TodoDto dto)

@@ -10,10 +10,12 @@ namespace ToDoApi.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Category>()
-                .HasMany(a => a.Todos)
-                .WithOne(a => a.Category)
-                .HasForeignKey(a => a.CategoryId);
+            modelBuilder.Entity<Todo>()
+                .HasOne(a => a.Category)
+                .WithMany(a => a.Todos)
+                .HasForeignKey(a => a.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Personal" },
                 new Category { Id = 2, Name = "Work" },
