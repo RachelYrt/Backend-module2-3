@@ -1,5 +1,4 @@
-﻿using MediatR;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using ToDoApi.DTOs;
 using ToDoApi.Models;
 using ToDoApi.Mappers;
@@ -9,40 +8,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ToDoApi.Commands
 {
-    public class UpdateTodoCommand:IRequest<TodoDto>
-    {
-        [Required]
-        public string Id { get; set; } = string.Empty;
-        [Required]
-        public string Text { get; set; } = string.Empty;
-        public string?  Drescription { get; set; }
-        public int? CategoryId { get; set; }
-    }
-    public class UpdateTodoCommandHandler : IRequestHandler<UpdateTodoCommand, TodoDto?>
+
+    public class UpdateTodoCommand
     {
         private readonly TodoContext _context;
-        private readonly ILogger<UpdateTodoCommandHandler> _logger;
-        public UpdateTodoCommandHandler(TodoContext context,ILogger<UpdateTodoCommandHandler> logger)
+        private readonly ILogger  _logger;
+        public UpdateTodoCommand(TodoContext context,ILogger logger)
         {
             _context = context;
             _logger = logger;
         }
-        public async Task<TodoDto?> Handle(UpdateTodoCommand request, CancellationToken cancellationToken)
+        public async Task<TodoDto?> ExecuteAsync(string id, string text, string? description, int? categoryId)
         {
-            _logger.LogInformation("Updating Todo: {Id}",request.Id);
             var todo = await _context.Todos
-                .Include(t=>t.Category)
-                .FirstOrDefaultAsync(t=>t.Id == request.Id,cancellationToken);
+                .FindAsync(id);
             if(todo == null)
             {
-                _logger.LogInformation("Todo not found:{Id}",request.Id);
+                _logger.LogInformation("Todo not found:{id}",id);
                 return null;
             }
-            todo.Text = request.Text;
-            todo.Description = request.Drescription;
-            todo.CategoryId = request.CategoryId;
-            await _context.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Todo updated successfully:{Id}", todo.Id);
+            todo.Text = text;
+            todo.Description = description;
+            todo.CategoryId = categoryId;
+
+            _context.Todos.Update(todo);
+            await _context.SaveChangesAsync();
+            var result = await _context.Todos
+                .Include(t => t.Category)
+                .FirstAsync(t => t.Id == id);
+            _logger.LogInformation("Todo updated successfully:{Id}", id);
             return todo.ToDto();
         }
     }

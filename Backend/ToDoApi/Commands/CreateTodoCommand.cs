@@ -3,45 +3,35 @@ using ToDoApi.Models;
 using ToDoApi.Mappers;
 using ToDoApi.DTOs;
 using Microsoft.Extensions.Logging;
-using MediatR;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ToDoApi.Commands
 {
-    public class CreateTodoCommand:IRequest<TodoDto>
-    {
-        public string Text {  get; set; }=string.Empty;
-        public string? Description { get; set; }
-        public int? CategoryId { get; set; }
 
-
-    }
-    public class CreateTodoCommandHandler:IRequestHandler<CreateTodoCommand,TodoDto>
+    public class CreateTodoCommand
     {
         private readonly TodoContext _context;
         private readonly ILogger _logger;
-        public CreateTodoCommandHandler(TodoContext context, ILogger<CreateTodoCommand> logger)
+        public CreateTodoCommand(TodoContext context, ILogger<CreateTodoCommand> logger)
         {
             _context = context;
             _logger = logger;
         }
-        public async Task<TodoDto> Handle(CreateTodoCommand request,CancellationToken cancellationToken)
+        public async Task<TodoDto> ExecuteAsync(CreateTodoDto dto)
         {
-            _logger.LogInformation("Creating new Todo:{Text}",request.Text);
+            _logger.LogInformation("Creating new Todo:{Text}",dto.Text);
             var todo = new Todo()
             {
-                Text = request.Text,
-                Description = request.Description,
-                CategoryId = request.CategoryId
+                Text = dto.Text,
+                Description = dto.Description,
+                CategoryId = dto.CategoryId
             };
             _context.Todos.Add(todo);
-            await _context.SaveChangesAsync(cancellationToken);
-            var result = await _context.Todos
-                .Include(t => t.Category)
-                .FirstAsync(t => t.Id == todo.Id, cancellationToken);
+            await _context.SaveChangesAsync();
+            
             _logger.LogInformation("Todo created successfully with Id:{Id}", todo.Id);
-            return result.ToDto();
+            return todo.ToDto();
 
 
         }

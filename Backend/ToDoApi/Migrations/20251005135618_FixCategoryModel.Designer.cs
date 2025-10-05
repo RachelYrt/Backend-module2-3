@@ -11,8 +11,8 @@ using ToDoApi.Data;
 namespace ToDoApi.Migrations
 {
     [DbContext(typeof(TodoContext))]
-    [Migration("20250926034414_AddCategoryAddSeedData")]
-    partial class AddCategoryAddSeedData
+    [Migration("20251005135618_FixCategoryModel")]
+    partial class FixCategoryModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,15 +105,11 @@ namespace ToDoApi.Migrations
             modelBuilder.Entity("ToDoApi.Models.Todo", b =>
                 {
                     b.HasOne("ToDoApi.Models.Category", "Category")
-                        .WithMany("Todos")
-                        .HasForeignKey("CategoryId");
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ToDoApi.Models.Category", b =>
-                {
-                    b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618
         }

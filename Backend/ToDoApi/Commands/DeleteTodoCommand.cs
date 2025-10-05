@@ -6,35 +6,27 @@ using ToDoApi.DTOs;
 
 namespace ToDoApi.Commands
 {
-    public class DeleteTodoCommand:IRequest<bool>
-    {
-        public string Id { get; set; }= string.Empty;
-        public DeleteTodoCommand(string id)
-        {
-            Id = id;
-        }
-    }
-    public class DeleteTodoCommandHandler : IRequestHandler<DeleteTodoCommand, bool>
+
+    public class DeleteTodoCommand
     {
         private readonly TodoContext _context;
-        private readonly ILogger<DeleteTodoCommandHandler> _logger;
-        public DeleteTodoCommandHandler(TodoContext context,ILogger<DeleteTodoCommandHandler> logger)
+        private readonly ILogger _logger;
+        public DeleteTodoCommand(TodoContext context,ILogger logger)
         {
             _context = context;
             _logger = logger;
         }
-        public async Task<bool> Handle(DeleteTodoCommand request, CancellationToken cancellationToken)
+        public async Task<bool> ExecuteAsync(int id)
         {
-            _logger.LogInformation("Deleting todo: {Id}", request.Id);
-            var todo = await _context.Todos.FindAsync(new object[] { request.Id }, cancellationToken);
+            var todo = await _context.Todos.FindAsync(id);
             if (todo == null)
             {
-                _logger.LogInformation("Todo not found: {Id}", request.Id);
+                _logger.LogInformation("Todo not found: {Id}", id);
                 return false;
             }
             _context.Todos.Remove(todo);
-            await _context.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("ToDo deleted successfully: {Id}", request.Id);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("ToDo deleted successfully: {Id}", id);
             return true;
         }
 

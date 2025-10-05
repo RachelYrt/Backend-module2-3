@@ -5,8 +5,8 @@ using ToDoApi.Data;
 using ToDoApi.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+//builder.Services.AddMediatR(cfg =>
+//    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddCors(options =>
 {
@@ -30,7 +30,6 @@ builder.Services.AddOpenApi();
 object value = builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TodoContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 var app = builder.Build();
 
 
