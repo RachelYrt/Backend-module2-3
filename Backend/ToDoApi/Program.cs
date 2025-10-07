@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using ToDoApi.Data;
+using ToDoApi.DTOs;
+using ToDoApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +27,7 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 object value = builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<TodoService>();
 builder.Services.AddDbContext<TodoContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

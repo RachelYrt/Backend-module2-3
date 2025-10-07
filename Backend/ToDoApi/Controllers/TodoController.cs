@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ToDoApi.Data;
+using ToDoApi.DTOs;
 using ToDoApi.Models;
+using ToDoApi.Services;
 
 namespace ToDoApi.Controllers
 {
@@ -9,65 +11,56 @@ namespace ToDoApi.Controllers
     [ApiController]
     public class TodoController:ControllerBase
     {
-        private readonly TodoContext _context; 
-        public TodoController(TodoContext context)
+        //todo refactor this controller into another service layer
+        //move all the query to the service, service should return DTO to controller
+        //service should use depedency injection into controller
+        private readonly TodoService _service; 
+        public TodoController(TodoService service)
         {
-            _context = context;
+            _service = service;
         }
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult<TodoDto>> GetAll()
         {
-            var todo = await _context.Todos
-                .Include(x => x.Category)
-                .ToListAsync();
-            return Ok(todo);
+            var todos = await _service.GetAllAsync();
+            return Ok(todos);
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetById([FromRoute]string id)
+        public async Task<ActionResult<TodoDto>> GetById([FromRoute]string id)
         {
-            var todo = await _context.Todos.FindAsync(id);
-            if (todo == null)
-            {
+            var todo = await _service.GetById(id);
+            if (todo is null)
                 return NotFound();
-            }
             return Ok(todo);
 
         }
         [HttpPost]
-        public async Task<ActionResult> CreateNew([FromBody] Todo todo)
+        public async Task<ActionResult<TodoDto>> CreateNew([FromBody] TodoDto dto)
         {
-            if (todo == null)
-            {
-                return NotFound();
-            }
-            _context.Todos.Add(todo);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById),new {id = todo.Id}, todo);
+            var created = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById),new {id = created.Id}, created);
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateTodo(string id, [FromBody]Todo updateTodo)
+        public async Task<ActionResult<TodoDto>> Update(string id, [FromBody]TodoDto updateDto)
         {
-            var todo = await _context.Todos.FindAsync(id);
-            if(todo == null)
+            var updated = await _service.UpdateAsync(id,updateDto);
+            if(updated == null)
             {
                 return NotFound();
             }
-            todo.Text = updateTodo.Text;
-            todo.Description = updateTodo.Description;
-            await _context.SaveChangesAsync();
-            return Ok(todo);
+            
+            return Ok(updated);
 
         }
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteTodo([FromRoute] string id)
+        public async Task<ActionResult<TodoDto>> DeleteTodo([FromRoute] string id)
         {
-            var todo = await _context.Todos.FindAsync(id);
-            if(todo == null)
+            var success = await _service.DeleteAsync(id);
+            if(!success )
             {
                 return NotFound();
             }
-            _context.Todos.Remove(todo);
-            await _context.SaveChangesAsync();
+            
             return NoContent();
 
         }
