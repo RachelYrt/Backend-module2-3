@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using System.Reflection;
 using ToDoApi.Data;
 using ToDoApi.DTOs;
-using ToDoApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.Services.AddMediatR(cfg =>
+//    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 builder.Services.AddCors(options =>
 {
@@ -20,17 +22,15 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
     });
+builder.Services.AddScoped<TodoService>();
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 object value = builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<TodoService>();
 builder.Services.AddDbContext<TodoContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 var app = builder.Build();
 
 

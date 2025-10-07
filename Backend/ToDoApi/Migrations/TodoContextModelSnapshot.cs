@@ -102,16 +102,11 @@ namespace ToDoApi.Migrations
             modelBuilder.Entity("ToDoApi.Models.Todo", b =>
                 {
                     b.HasOne("ToDoApi.Models.Category", "Category")
-                        .WithMany("Todos")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ToDoApi.Models.Category", b =>
-                {
-                    b.Navigation("Todos");
                 });
 #pragma warning restore 612, 618
         }

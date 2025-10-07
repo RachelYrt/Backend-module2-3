@@ -12,7 +12,7 @@ namespace ToDoApi.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Todo>()
                 .HasOne(a => a.Category)
-                .WithMany(a => a.Todos)
+                .WithMany()
                 .HasForeignKey(a => a.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
 
